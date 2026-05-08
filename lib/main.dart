@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart'; // Provides Cupertino-style widgets
 import 'package:flutter/material.dart'; // Provides Material Design widgets
 import 'package:flutter_app/location_helper.dart'; // Import custom location helper
@@ -48,16 +50,30 @@ class _FinalViewState extends State<FinalView> {
   /// Fetches the user's location and updates the UI
   Future<void> getLocation() async {
     setState(() => _isLoading = true); // Show loading indicator
+    final Map<String,String> CityAndPhoneNumber = {
+      'sofia' : '+359  1302',
+      'plovdiv' : '+359  1332',
+      'varna' : '+359  1352',
+      'burgas' : '+359  1356',
+      'starazagora' : '+359  1342',
+      'ruse' : '+359  1358',
+      'pleven' : '+359  1364',
+      'velikotarnovo' : '+359  1355',
+      'blagoevgrad' : '+359  1373',
+      'vratsa' : '+359  1392',
 
+    }; 
     final locationData =
-        await locationHelper.getUserLocation(); // Fetch location
-
+        await locationHelper.getUserLocation(); // Fetch location\
+    String phoneNumber = locationData?['city'].toString().toLowerCase().trim().replaceAll(' ', '') ?? 'Location not found';
+   
     if (locationData != null) {
       setState(() {
         // Format and display the location details
         userLocation =
             'Latitude: ${locationData['latitude']}, Longitude: ${locationData['longitude']}\n'
             'City: ${locationData['city']}, Country: ${locationData['country']}\n'
+            'Phone Number: ${CityAndPhoneNumber[phoneNumber] ?? "Phone number not available"}\n'
             'Address: ${locationData['address']}';
 
         _isLoading = false; // Hide loading indicator
@@ -98,20 +114,3 @@ class _FinalViewState extends State<FinalView> {
   }
 }
 
-/* 
-
-🌍 Global Locations (Sample Coordinates):
-🌎 Location	📍 Latitude	📍 Longitude
-
-🗽 New York, USA	        40.7128	-74.0060
-🕌 Mecca, Saudi Arabia	    21.3891	39.8579
-🏖 Sydney, Australia	    -33.8688	151.2093
-🏯 Tokyo, Japan	        35.6895	139.6917
-🏜 Dubai, UAE	        25.276987	55.296249
-🌋 Reykjavík, Iceland	64.1466	-21.9426
-🏔 Kathmandu, Nepal	    27.7172	85.3240
-🏝 Honolulu, Hawaii, USA	21.3069	-157.8583
-🗿 Easter Island, Chile	-27.1127	-109.3497
-🏞 Amazon Rainforest, Brazil	-3.4653	-62.2159
-
-*/
